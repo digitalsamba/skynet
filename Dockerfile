@@ -38,45 +38,45 @@ RUN \
 FROM builder AS ffmpeg_builder
 
 # ffmpeg build dependencies
-RUN \
-    apt-dpkg-wrap apt-get install -y \
-        autoconf \
-        automake \
-        libopus-dev \
-        libopus0 \
-        libtool \
-        pkg-config \
-        texinfo \
-        wget \
-        yasm \
-        zlib1g \
-        zlib1g-dev
+#RUN \
+#    apt-dpkg-wrap apt-get install -y \
+#        autoconf \
+#        automake \
+#        libopus-dev \
+#        libopus0 \
+#        libtool \
+#        pkg-config \
+#        texinfo \
+#        wget \
+#        yasm \
+#        zlib1g \
+#        zlib1g-dev
 
 # Build ffmpeg6 (required for pytorch which only supports ffmpeg < v7)
-RUN \
-    mkdir -p /opt/ffmpeg && \
-    cd /opt/ && \
-    wget -q https://www.ffmpeg.org/releases/ffmpeg-6.1.2.tar.gz && \
-    tar -xzf ffmpeg-6.1.2.tar.gz -C /opt/ffmpeg --strip-components 1 && \
-    rm ffmpeg-6.1.2.tar.gz && \
-    cd /opt/ffmpeg/ && \
-    ./configure \
-      --enable-shared \
-      --enable-gpl \
-      --enable-libopus && \
-    JOBS="$(nproc)" && \
-    make -j "${JOBS}" && \
-    make install && \
-    ldconfig
+#RUN \
+#    mkdir -p /opt/ffmpeg && \
+#    cd /opt/ && \
+#    wget -q https://www.ffmpeg.org/releases/ffmpeg-6.1.2.tar.gz && \
+#    tar -xzf ffmpeg-6.1.2.tar.gz -C /opt/ffmpeg --strip-components 1 && \
+#    rm ffmpeg-6.1.2.tar.gz && \
+#    cd /opt/ffmpeg/ && \
+#    ./configure \
+#      --enable-shared \
+#      --enable-gpl \
+#      --enable-libopus && \
+#    JOBS="$(nproc)" && \
+#    make -j "${JOBS}" && \
+#    make install && \
+#    ldconfig
 
 ## Production Image
 
 FROM ${BASE_IMAGE_RUN}
 
 COPY --chown=jitsi:jitsi docker/run-skynet.sh /opt/
-COPY --from=ffmpeg_builder /usr/local/include /usr/local/include
-COPY --from=ffmpeg_builder /usr/local/lib/lib* /usr/local/lib/
-COPY --from=ffmpeg_builder /usr/local/lib/pkgconfig /usr/local/lib/pkgconfig
+#COPY --from=ffmpeg_builder /usr/local/include /usr/local/include
+#COPY --from=ffmpeg_builder /usr/local/lib/lib* /usr/local/lib/
+#COPY --from=ffmpeg_builder /usr/local/lib/pkgconfig /usr/local/lib/pkgconfig
 COPY --chown=jitsi:jitsi --from=builder /app/.venv /app/.venv
 COPY --chown=jitsi:jitsi /skynet /app/skynet/
 
