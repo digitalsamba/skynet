@@ -67,8 +67,8 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker push digitalsamba376/skynet:latest
-          docker push digitalsamba376/skynet::${{ github.sha }}
+          docker push digitalsamba/skynet:latest
+          docker push digitalsamba/skynet:${{ github.sha }}
 
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1.0.3
