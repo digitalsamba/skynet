@@ -1,4 +1,4 @@
-name: Deploy Skynet
+name: Create less-memory-devel images
 
 on:
   push:
