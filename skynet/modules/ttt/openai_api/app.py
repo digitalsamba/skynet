@@ -35,7 +35,7 @@ def initialize():
             --model {llama_path} \
             --gpu_memory_utilization 0.5 \
             --max-model-len {llama_n_ctx} \
-            --cpu-offload-gb 10 \
+          #  --cpu-offload-gb 10 \
             --port {vllm_server_port}'.split(),
         shell=False,
     )
