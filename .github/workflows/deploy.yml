@@ -19,7 +19,7 @@ jobs:
           remove-swapfile: 'true'
           remove-large-packages: 'true'
           remove-haskell: 'true'
-          remove-cached-tools: 'true'
+          #remove-cached-tools: 'true'
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -27,13 +27,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+#      - name: Cache Docker layers
+#        uses: actions/cache@v3
+#        with:
+#          path: /tmp/.buildx-cache
+#          key: ${{ runner.os }}-buildx-${{ github.sha }}
+#          restore-keys: |
+#            ${{ runner.os }}-buildx-
 
         #with:
         #  path: ~/.cache/pip
@@ -47,14 +47,19 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+ #     - name: Build and Push Docker Image
+ #       run: |
+ #         docker buildx build \
+ #           --build-arg BASE_IMAGE_BUILD=nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04 \
+ #           --build-arg BASE_IMAGE_RUN=nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04 \
+ #           --cache-from=type=local,src=/tmp/.buildx-cache \
+ #           --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
+ #           -t digitalsamba376/skynet:latest .
+ #         docker push digitalsamba376/skynet:latest
+
       - name: Build and Push Docker Image
         run: |
-          docker buildx build \
-            --build-arg BASE_IMAGE_BUILD=nvidia/cuda:12.2.2-cudnn8-devel-ubuntu22.04 \
-            --build-arg BASE_IMAGE_RUN=nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04 \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
-            -t digitalsamba376/skynet:latest .
+          docker build -t digitalsamba376/skynet:latest
           docker push digitalsamba376/skynet:latest
 
       - name: Deploy to Server via SSH
@@ -69,12 +74,18 @@ jobs:
 
             sudo docker stop skynet-dev || true
             sudo docker rm skynet-dev || true
-            sudo docker stop redis || true
-            sudo docker rm redis || true
-            sudo docker run -d --name redis -p 6379:6379 redis 
 
-            sudo docker run -d --name skynet-dev --gpus all \
-                                -v /opt/models:/models \
-                                --env-file /opt/dev/.env \
-                                --link redis \
-                                -p 8000:8000 digitalsamba376/skynet:latest
+            sudo sudo docker run -d --rm \
+                              --name skynet-dev \
+                              --gpus all \
+                              --network=deployment_proxy \
+                              --env VIRTUAL_HOST=skynet-dev-canopus-eu.digitalsamba.com \
+                              --env LETSENCRYPT_HOST=skynet-dev-canopus-eu.digitalsamba.com \
+                              --env VIRTUAL_PORT=8001 \
+                              --env CUDA_MPS_PIPE_DIRECTORY=/tmp/nvidia-mps \
+                              --env CUDA_MPS_LOG_DIRECTORY=/tmp/nvidia-mps-log \
+                              --volume /opt/deployment/models:/models \
+                              --env-file /opt/deployment/dev/.env \
+                              --link redis \
+                              -p 8001:8000 \
+                              digitalsamba376/skynet:latest                          
