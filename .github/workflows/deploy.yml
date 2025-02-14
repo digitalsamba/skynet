@@ -8,7 +8,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-22.04
- 
+
+    steps:
       - name: Maximize build space
         uses: AdityaGarg8/remove-unwanted-software@v5
         with:
