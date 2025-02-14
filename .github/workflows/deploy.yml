@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Check disk space
-        run: df . -h
+ #     - name: Check disk space
+ #       run: df . -h
 
       - name: Maximize build space
         uses: AdityaGarg8/remove-unwanted-software@v5
@@ -20,8 +20,8 @@ jobs:
           remove-dotnet: 'true'
           remove-codeql: 'true'
 
-      - name: Check disk again
-        run: df . -h
+ #     - name: Check disk again
+ #       run: df . -h
 
       - name: Checkout repository
         uses: actions/checkout@v4
