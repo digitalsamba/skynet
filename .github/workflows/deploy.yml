@@ -59,7 +59,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t digitalsamba376/skynet:latest
+          docker build -t digitalsamba376/skynet:latest .
           docker push digitalsamba376/skynet:latest
 
       - name: Deploy to Server via SSH
