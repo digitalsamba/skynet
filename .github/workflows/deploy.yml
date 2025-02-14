@@ -78,6 +78,13 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             sudo docker pull digitalsamba376/skynet:latest
-            sudo docker stop skynet || true
-            sudo docker rm skynet || true
-            sudo docker run -d --name skynet -p 80:80 digitalsamba376/skynet:latest
+            sudo docker stop skynet-dev || true
+            sudo docker rm skynet-dev || true
+            sudo docker stop redis || true
+            sudo docker rm redis || true
+            sudo docker run -d --name redis -p 6379:6379 redis 
+            sudo docker run -d --name skynet-dev --gpus all \
+                                -v /opt/models:/models \
+                                --env-file /opt/dev/.env \
+                                --link redis \
+                                -p 8000:8000 digitalsamba376/skynet:latest
