@@ -44,7 +44,7 @@ jobs:
             --build-arg BASE_IMAGE_RUN=nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04 \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache,mode=max \
-            -t digitalsamba/skynet:latest .
+            -t digitalsamba376/skynet:latest .
           docker push digitalsamba376/skynet:latest
 
       - name: Deploy to Server via SSH
