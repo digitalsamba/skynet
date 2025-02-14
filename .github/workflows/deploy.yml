@@ -32,12 +32,12 @@ jobs:
       - name: Build and tag Docker image
         run: |
           docker build -t digitalsamba376/skynet:latest .
-          docker tag digitalsamba376/skynet:latest digitalsamba376/skynet:${{ github.sha }}
+#          docker tag digitalsamba376/skynet:latest digitalsamba376/skynet:${{ github.sha }}
 
       - name: Push Docker image to Docker Hub
         run: |
           docker push digitalsamba376/skynet:latest
-          docker push digitalsamba376/skynet:${{ github.sha }}
+ #         docker push digitalsamba376/skynet:${{ github.sha }}
 
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@v1.0.3
@@ -47,12 +47,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             
-            echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-            docker logout  # Logout to clear old credentials
-            docker login -u "${{ secrets.DOCKER_USERNAME }}" --password "${{ secrets.DOCKER_PASSWORD }}"
-
-            sudo docker pull digitalsamba376/skynet:latest
-            
+            sudo docker pull digitalsamba376/skynet:latest      
 
             sudo docker stop skynet-dev || true
             sudo docker rm skynet-dev || true
