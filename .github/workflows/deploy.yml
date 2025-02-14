@@ -76,7 +76,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
-          script: |
+          run: |
             sudo docker pull digitalsamba376/skynet:latest
             sudo docker stop skynet-dev || true
             sudo docker rm skynet-dev || true
