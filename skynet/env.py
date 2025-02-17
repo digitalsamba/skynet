@@ -1,6 +1,7 @@
 import os
 import sys
 import uuid
+import logging
 
 import torch
 
@@ -16,6 +17,9 @@ except ImportError:
 else:
     use_vllm = device == 'cuda'
 
+# Set up logging
+log = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 # utilities
 def tobool(val: str | None):
@@ -46,9 +50,8 @@ azure_openai_api_version = os.environ.get('AZURE_OPENAI_API_VERSION', '2024-02-0
 
 # openai api
 vllm_server_port = int(os.environ.get('VLLM_SERVER_PORT', 8003))
-openai_api_base_url = os.environ.get(
-    'OPENAI_API_BASE_URL', f'http://localhost:{vllm_server_port}' if use_vllm else "http://localhost:11434"
-)
+openai_api_base_url = os.environ.get('OPENAI_API_BASE_URL', f'http://localhost:{vllm_server_port}' if use_vllm else "http://localhost:11434")
+log.info(f'Using vLLM endpoint: {openai_api_base_url}')
 
 # openai
 openai_credentials_file = os.environ.get('SKYNET_CREDENTIALS_PATH')
