@@ -82,8 +82,6 @@ jobs:
                               --env VIRTUAL_HOST=skynet-dev-canopus-eu.digitalsamba.com \
                               --env LETSENCRYPT_HOST=skynet-dev-canopus-eu.digitalsamba.com \
                               --env VIRTUAL_PORT=8001 \
-                              --env CUDA_MPS_PIPE_DIRECTORY=/tmp/nvidia-mps \
-                              --env CUDA_MPS_LOG_DIRECTORY=/tmp/nvidia-mps-log \
                               --volume /opt/deployment/models:/models \
                               --env-file /opt/deployment/dev/.env \
                               --link redis \
