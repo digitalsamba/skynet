@@ -19,13 +19,15 @@ whitelisted_routes = []
 
 
 def initialize():
+    if not use_vllm:
+        from openai_router import openai_router  # Import manually
+        app.include_router(openai_router, prefix="/openai", dependencies=dependencies, responses=responses)
+        return
+
     from vllm.entrypoints.openai.api_server import router as vllm_router
 
     app.include_router(vllm_router, dependencies=dependencies, responses=responses)
     whitelisted_routes.extend(['/openai/docs', '/openai/openapi.json'])
-
-    if not use_vllm:
-        return
 
     log.info(f'Starting vLLM server on port {openai_api_port} using model {llama_path}')
 
