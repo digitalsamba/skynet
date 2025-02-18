@@ -65,7 +65,7 @@ async def is_ready():
         if use_vllm:
             return response == ''
         else:
-            return response == 'Ollama is running'
+            return response == ''
     except Exception:
         return False
 
