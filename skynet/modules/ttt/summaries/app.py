@@ -5,7 +5,7 @@ from fastapi_versionizer.versionizer import Versionizer
 
 from skynet import http_client
 from skynet.auth.user_info import setup_credentials
-from skynet.env import echo_requests_base_url, echo_requests_percent, echo_requests_token
+from skynet.env import echo_requests_base_url, echo_requests_percent, echo_requests_token, use_vllm
 from skynet.logs import get_logger
 from skynet.modules.ttt.openai_api.app import initialize as initialize_openai_api
 from skynet.utils import create_app
