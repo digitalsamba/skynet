@@ -20,7 +20,7 @@ whitelisted_routes = []
 
 def initialize():
     if not use_vllm:
-        from openai_router import openai_router  # Import manually
+        from skynet.modules.ttt.openai_api.openai_router import openai_router  # Import manually
         app.include_router(openai_router, prefix="/openai", dependencies=dependencies, responses=responses)
         return
 
