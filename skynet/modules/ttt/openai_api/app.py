@@ -19,46 +19,47 @@ whitelisted_routes = []
 
 
 def initialize():
-    if not use_vllm or remote_vllm_url:
-        return
+    if use_vllm and not remote_vllm_url:
+        from vllm.entrypoints.openai.api_server import router as vllm_router
 
+        app.include_router(vllm_router, dependencies=dependencies, responses=responses)
+        whitelisted_routes.extend(['/openai/docs', '/openai/openapi.json'])
 
-    from vllm.entrypoints.openai.api_server import router as vllm_router
+        log.info(f'Starting vLLM server on port {openai_api_port} using model {llama_path}')
 
-    app.include_router(vllm_router, dependencies=dependencies, responses=responses)
-    whitelisted_routes.extend(['/openai/docs', '/openai/openapi.json'])
+        proc = subprocess.Popen(
+            [
+                sys.executable,
+                '-m',
+                'vllm.entrypoints.openai.api_server',
+                '--disable-log-requests',
+                '--model',
+                llama_path,
+                '--gpu_memory_utilization',
+                str(0.98),
+                '--max-model-len',
+                str(llama_n_ctx),
+                '--port',
+                str(openai_api_port),
+            ],
+            shell=False,
+        )
 
-    log.info(f'Starting vLLM server on port {openai_api_port} using model {llama_path}')
+        if proc.poll() is not None:
+            log.error('Failed to start vLLM OpenAI API server')
+        else:
+            log.info('vLLM OpenAI API server started')
 
-    proc = subprocess.Popen(
-        [
-            sys.executable,
-            '-m',
-            'vllm.entrypoints.openai.api_server',
-            '--disable-log-requests',
-            '--model',
-            llama_path,
-            '--gpu_memory_utilization',
-            str(0.98),
-            '--max-model-len',
-            str(llama_n_ctx),
-            '--port',
-            str(openai_api_port),
-        ],
-        shell=False,
-    )
-
-    if proc.poll() is not None:
-        log.error('Failed to start vLLM OpenAI API server')
-    else:
-        log.info('vLLM OpenAI API server started')
+    # Ensure that the routes are always initialized
+    from skynet.modules.ttt.summaries.v1.router import router as summaries_router
+    app.include_router(summaries_router)
 
 
 async def is_ready():
     if use_oci:
         return True
 
-    url = f'{openai_api_base_url}/health' if use_vllm else openai_api_base_url
+    url = f'{openai_api_base_url}/health' if not use_vllm else openai_api_base_url
 
     try:
         response = await http_client.get(url, 'text')
@@ -66,7 +67,7 @@ async def is_ready():
         if use_vllm:
             return response == ''
         else:
-            return response == 'Ollama is running'
+            return response == ''
     except Exception:
         return False
 
