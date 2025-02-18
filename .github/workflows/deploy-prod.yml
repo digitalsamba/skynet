@@ -61,7 +61,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t digitalsamba376/skynet:${{ github.ref_name }} Dockerfile-prod .
+          docker build -t digitalsamba376/skynet:${{ github.ref_name }} -f Dockerfile-prod .
           docker push digitalsamba376/skynet:${{ github.ref_name }}
 
       - name: Deploy to Server via SSH
