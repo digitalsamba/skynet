@@ -18,7 +18,8 @@ from .v1.router import router as v1_router
 log = get_logger(__name__)
 
 app = create_app()
-app.include_router(v1_router)
+#app.include_router(v1_router)
+app.include_router(v1_router, prefix="/summaries")
 
 if echo_requests_base_url:
     log.info(f'Echoing requests enabled for url: {echo_requests_base_url}')
