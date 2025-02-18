@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 from skynet import http_client
 from skynet.auth.bearer import JWTBearer
-from skynet.env import bypass_auth, llama_n_ctx, llama_path, openai_api_base_url, openai_api_port, use_oci, use_vllm
+from skynet.env import bypass_auth, llama_n_ctx, llama_path, openai_api_base_url, openai_api_port, use_oci, use_vllm, remote_vllm_url
 from skynet.logs import get_logger
 from skynet.utils import create_app, dependencies, responses
 
@@ -19,8 +19,9 @@ whitelisted_routes = []
 
 
 def initialize():
-    if not use_vllm:
+    if not use_vllm or remote_vllm_url:
         return
+
 
     from vllm.entrypoints.openai.api_server import router as vllm_router
 

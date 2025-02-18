@@ -49,9 +49,11 @@ azure_openai_api_version = os.environ.get('AZURE_OPENAI_API_VERSION', '2024-02-0
 
 # openai api
 openai_api_port = 8003
+remote_vllm_url = os.environ.get('REMOTE_VLLM_URL')
 openai_api_base_url = os.environ.get(
-    'OPENAI_API_BASE_URL', f'http://localhost:{openai_api_port}' if use_vllm else "http://localhost:11434"
+    'OPENAI_API_BASE_URL', remote_vllm_url if use_vllm and remote_vllm_url else f'http://localhost:{openai_api_port}' if use_vllm else "http://localhost:11434"
 )
+
 
 # openai
 openai_credentials_file = os.environ.get('SKYNET_CREDENTIALS_PATH')
