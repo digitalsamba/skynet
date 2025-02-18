@@ -57,7 +57,8 @@ async def is_ready():
     if use_oci:
         return True
 
-    url = f'{openai_api_base_url}/health' if use_vllm else openai_api_base_url
+#    url = f'{openai_api_base_url}/health' if use_vllm else openai_api_base_url
+    url = f'{openai_api_base_url}/health' if not use_vllm else openai_api_base_url
 
     try:
         response = await http_client.get(url, 'text')
