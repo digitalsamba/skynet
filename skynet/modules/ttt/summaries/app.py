@@ -54,7 +54,11 @@ async def app_startup():
 async def executor_startup():
     await setup_credentials()
 
-    initialize_openai_api()
+    if use_vllm:
+        log.info(f"Using external vLLM at {openai_api_base_url}")
+    else:
+        log.info(f"Initializing OpenAI API internally at {openai_api_base_url}")
+        initialize_openai_api()  # This might be replacing app routes!
 
     log.info('summaries:executor module initialized')
 
